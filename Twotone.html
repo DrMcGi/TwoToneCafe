@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Two Tone Café — Order Online</title>
+  <style>
+    :root{
+      --brand:#2c7a7b;
+      --accent:#ffefc1;
+      --muted:#777;
+      --bg:#fbfbfb;
+      --card:#fff;
+    }
+    *{box-sizing:border-box}
+    body{font-family:Inter,system-ui,Arial,sans-serif;margin:0;background:var(--bg);color:#222}
+    header{padding:18px 16px;text-align:center;background:linear-gradient(90deg,#fff,#fff);border-bottom:1px solid #eee}
+    h1{margin:0;font-size:1.6rem;color:var(--brand)}
+    p.tag{margin:6px 0 0;color:var(--muted)}
+    .wrap{max-width:980px;margin:18px auto;padding:12px}
+    .menu-section{margin-bottom:18px}
+    h2.section-title{margin:8px 0 12px;color:#444;border-bottom:1px dashed #eee;padding-bottom:6px}
+    .menu-grid{display:grid;grid-template-columns:repeat(2,minmax(240px,1fr));gap:12px}
+    .item-card{background:var(--card);padding:12px;border-radius:10px;border:1px solid #eee;display:flex;flex-direction:column;gap:8px}
+    .thumb{width:100%;height:120px;border-radius:8px;background:#f2f2f2;display:flex;align-items:center;justify-content:center;color:#bbb;font-size:0.95rem}
+    .item-meta h4{margin:0;font-size:1rem;display:flex;justify-content:space-between;align-items:center}
+    .item-meta p{margin:6px 0 0;font-size:0.9rem;color:var(--muted)}
+    .price{font-weight:800;color:var(--brand);margin-left:8px}
+    .controls{display:flex;gap:8px;align-items:center;justify-content:space-between;margin-top:8px}
+    .qty-controls{display:flex;align-items:center;gap:6px}
+    .btn{display:inline-flex;align-items:center;justify-content:center;padding:6px 10px;border-radius:8px;border:1px solid #ddd;background:#fff;cursor:pointer;transition:0.12s}
+    .btn:hover{background:#fafafa}
+    input.qty{width:56px;text-align:center;padding:6px;border-radius:6px;border:1px solid #ddd}
+    .options{display:none;margin-top:8px;padding:8px;border-radius:8px;border:1px dashed #eee;background:#fffbea;font-size:0.9rem}
+    .options b{display:block;margin-bottom:6px}
+    .options label{display:block;margin:4px 0}
+    .sidebar{position:sticky;top:16px;margin-top:12px}
+    .summary{background:var(--card);padding:14px;border-radius:10px;border:1px solid #eee}
+    .summary h3{margin:0 0 8px 0}
+    .row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #f0f0f0}
+    .row:last-child{border-bottom:none}
+    .input{width:100%;padding:8px;border-radius:6px;border:1px solid #ddd;margin-top:6px}
+    .delivery-note{background:var(--accent);padding:10px;border-radius:8px;margin:12px 0;text-align:center;color:#8a4b08;font-weight:600}
+    .place-btn{width:100%;padding:12px;border-radius:12px;border:none;background:var(--brand);color:#fff;font-weight:800;cursor:pointer;font-size:1rem;transition:0.12s}
+    .place-btn:hover{filter:brightness(1.05)}
+    .place-btn[disabled]{opacity:0.6;cursor:not-allowed}
+    .clear-btn{width:100%;padding:10px;border-radius:8px;border:1px solid var(--brand);background:#fff;color:var(--brand);font-weight:700;margin-top:8px;cursor:pointer}
+    small.muted{color:var(--muted);display:block;margin-top:6px}
+    footer{padding:18px 16px;text-align:center;color:var(--muted);font-size:0.9rem;margin-top:20px}
+    @media(max-width:880px){.menu-grid{grid-template-columns:repeat(2,1fr)} .layout{display:block}.sidebar{order:2;margin-top:18px}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>☕ Two Tone Café</h1>
+    <p class="tag">Fresh kotas, crispy chips & essentials — order for delivery 🚴 or quick collection 🍽️</p>
+  </header>
+
+  <main class="wrap layout">
+    <section style="flex:1">
+
+      <!-- Kotas -->
+      <div class="menu-section">
+        <h2 class="section-title">Kotas</h2>
+        <div class="menu-grid" id="kotasGrid"></div>
+      </div>
+
+      <!-- Chips -->
+      <div class="menu-section">
+        <h2 class="section-title">Chips</h2>
+        <div class="menu-grid" id="chipsGrid"></div>
+      </div>
+
+      <!-- We also have -->
+      <div class="menu-section">
+        <h2 class="section-title">We also have:</h2>
+        <div class="menu-grid" id="otherGrid"></div>
+      </div>
+
+      <div class="delivery-note">🔥 Order now — delivery in your area. Collection gets a 5% discount.</div>
+      <small class="muted">Images: placeholders — replace `img` values later with real pictures.</small>
+    </section>
+
+    <aside class="sidebar" style="width:360px">
+      <div class="summary">
+        <h3>Order Summary</h3>
+        <div id="orderLines" style="max-height:220px;overflow:auto"></div>
+
+        <div class="row"><div>Subtotal</div><div id="subtotal">R0.00</div></div>
+        <div class="row" id="discountRow" style="display:none;color:green"><div>Collection discount</div><div id="discount">-R0.00</div></div>
+        <div class="row"><div>Delivery fee</div><div id="deliveryFee">R0.00</div></div>
+        <div class="row"><div>Tip (optional)</div><div><input id="tip" class="input" type="number" min="0" step="1" value="0"></div></div>
+        <div class="row" style="font-weight:800;font-size:1.05rem"><div>Total</div><div id="total">R0.00</div></div>
+
+        <hr style="margin:12px 0">
+
+        <label><strong>Your name</strong><input id="name" class="input" placeholder="John Doe"></label>
+        <label style="margin-top:8px"><strong>Phone number</strong><input id="phone" class="input" placeholder="0811234567"></label>
+        <label style="margin-top:8px"><strong>Order method</strong>
+          <select id="method" class="input">
+            <option value="">-- Select --</option>
+            <option value="Collection">Collection (pick up)</option>
+            <option value="Delivery">Delivery (to your address)</option>
+          </select>
+        </label>
+        <label style="margin-top:8px"><strong>Address (if delivery)</strong><input id="address" class="input" placeholder="Street, Area, Building" /></label>
+
+        <button id="placeOrder" class="place-btn" disabled>Place order via WhatsApp</button>
+        <button id="clearCart" class="clear-btn">Clear Cart</button>
+        <small class="muted" style="margin-top:8px">We will message you to confirm time & payment — cash on delivery accepted.</small>
+      </div>
+    </aside>
+  </main>
+
+  <footer>Built for Two Tone Café · Prototype</footer>
+
+  <script>
+    /* -------------------------
+       Config & menu data
+       ------------------------- */
+    const CURRENCY = 'R';
+    const WHATSAPP_NUMBER = '27767475399'; // Two Tone Cafe number (international format, no +)
+    const DELIVERY_FEE_BASE = 8; // kept consistent with Phasha
+    const COLLECTION_DISCOUNT_PERCENT = 5;
+
+    // Extras (available only for kotas) - prices chosen (you can change)
+    const extrasList = [
+      { id: 'extra-cheese', name: 'Extra Cheese', price: 5 },
+      { id: 'extra-vienna', name: 'Extra Vienna', price: 6 },
+      { id: 'extra-russian', name: 'Extra Russian', price: 8 },
+      { id: 'extra-patty', name: 'Extra Beef Patty', price: 15 },
+      { id: 'extra-polony', name: 'Extra Polony', price: 5 },
+    ];
+
+    // Sauces & seasoning (Two Tone list)
+    const saucesAndSeasoning = [
+      "Tomato Sauce",
+      "BBQ Sauce",
+      "Hot Sauce",
+      "Salt",
+      "Spice",
+      "Vinegar",
+      "Green Chillies with Secret Sauce"
+    ];
+
+    // Menu items - categories: 'kota', 'chips', 'other'
+    const menuItems = [
+      // Kotas (with full details)
+      { id:'galxboy', name:'GalXBoy', price:25, desc:'Polony, Chakalaka, Chips, Viana', category:'kota', img:'images/GalXBoy.jpg' },
+      { id:'true-relegion', name:'True Relegion', price:30, desc:'Russian, Cheese, Polony, Chakalaka, Lettuce', category:'kota', img:'' },
+      { id:'dagwood', name:'Dagwood', price:45, desc:'Beef patty, Lettuce, Polony, Cheese, Russian, Chakalaka, Viana', category:'kota', img:'images/Dagwood.jpg' },
+      { id:'king-kota', name:'King Kota', price:100, desc:'2x beef patties, 2x Russian, 2x Viana, 2x Polony, 2x Cheese, Lettuce & extra chips', category:'kota', img:'' },
+
+      // Chips
+      { id:'chips-small', name:'Small Chips', price:25, desc:'Crispy and golden', category:'chips', img:'images/chips.jpg' },
+      { id:'chips-medium', name:'Medium Chips', price:30, desc:'Perfect mid size', category:'chips', img:'images/chips.jpg' },
+      { id:'chips-large', name:'Large Chips', price:50, desc:'Big serving to share', category:'chips', img:'images/chips.jpg' },
+
+      // We also have:
+      { id:'charcoal-5kg', name:'Charcoal 5kg', price:70, desc:'High heat cooking charcoal', category:'other', img:'images/Charcoal.jpg' },
+      { id:'briq-4kg', name:'CharKing Briquettes 4kg', price:80, desc:'Long-burning briquettes', category:'other', img:'' },
+      { id:'wood-4kg', name:'Wood 4kg', price:40, desc:'Seasoned firewood', category:'other', img:'images/wood.jpg' }
+    ];
+
+    // State: quantities keyed by id
+    const quantities = {}; // { itemId: { qty: 0, extras: [], sauces: [] } }
+
+    /* -------------------------
+       Render menu per category
+       ------------------------- */
+    function renderCategoryGrids() {
+      const kotasGrid = document.getElementById('kotasGrid');
+      const chipsGrid = document.getElementById('chipsGrid');
+      const otherGrid = document.getElementById('otherGrid');
+
+      kotasGrid.innerHTML = '';
+      chipsGrid.innerHTML = '';
+      otherGrid.innerHTML = '';
+
+      menuItems.forEach(item => {
+        // init state
+        quantities[item.id] = { qty: 0, extras: [], sauces: [] };
+
+        // card
+        const card = document.createElement('div');
+        card.className = 'item-card';
+        card.innerHTML = `
+          <div class="thumb" aria-hidden="true">${item.img ? `<img src="${item.img}" alt="${item.name}" style="width:100%;height:100%;object-fit:cover;border-radius:8px">` : 'IMAGE'}</div>
+          <div class="item-meta">
+            <h4>${item.name} <span class="price">${CURRENCY}${item.price}</span></h4>
+            <p>${item.desc}</p>
+          </div>
+          <div class="controls">
+            <div class="qty-controls" aria-label="Quantity for ${item.name}">
+              <button class="btn minus" data-id="${item.id}">−</button>
+              <input type="number" min="0" value="0" class="qty" id="qty_${item.id}" aria-label="${item.name} quantity">
+              <button class="btn plus" data-id="${item.id}">+</button>
+            </div>
+            <div style="min-width:80px;text-align:right;color:var(--muted);font-size:0.9rem">Unit: ${CURRENCY}${item.price}</div>
+          </div>
+
+          <!-- extras (kotas only) -->
+          ${item.category === 'kota' ? `<div class="options" id="extras-${item.id}">
+            <b>Add extras (per kota):</b>
+            ${extrasList.map(ex=>`<label><input type="checkbox" data-item="${item.id}" data-extra="${ex.id}" data-price="${ex.price}"> ${ex.name} (+${CURRENCY}${ex.price})</label>`).join('')}
+          </div>` : ''}
+
+          <!-- sauces & seasoning (only shown for kota & chips when qty > 0) -->
+          <div class="options" id="sauces-${item.id}">
+            <b>Sauces & seasoning (select):</b>
+            ${saucesAndSeasoning.map(s=>`<label><input type="checkbox" data-item="${item.id}" value="${s}"> ${s}</label>`).join('')}
+          </div>
+        `;
+
+        // append to correct grid
+        if (item.category === 'kota') kotasGrid.appendChild(card);
+        else if (item.category === 'chips') chipsGrid.appendChild(card);
+        else if (item.category === 'other') otherGrid.appendChild(card);
+      });
+
+      // attach listeners
+      attachMenuListeners();
+    }
+
+    /* -------------------------
+       Attach menu listeners
+       ------------------------- */
+    function attachMenuListeners() {
+      document.querySelectorAll('.plus').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.dataset.id;
+          const el = document.getElementById('qty_'+id);
+          el.value = Number(el.value || 0) + 1;
+          quantities[id].qty = Number(el.value);
+          toggleOptionsVisibility(id);
+          updateOrder();
+        });
+      });
+
+      document.querySelectorAll('.minus').forEach(btn=>{
+        btn.addEventListener('click', ()=>{
+          const id = btn.dataset.id;
+          const el = document.getElementById('qty_'+id);
+          el.value = Math.max(0, Number(el.value || 0) - 1);
+          quantities[id].qty = Number(el.value);
+          toggleOptionsVisibility(id);
+          updateOrder();
+        });
+      });
+
+      document.querySelectorAll('.qty').forEach(inp=>{
+        inp.addEventListener('input', ()=>{
+          const id = inp.id.replace('qty_','');
+          const val = Math.max(0, Number(inp.value || 0));
+          inp.value = val;
+          quantities[id].qty = val;
+          toggleOptionsVisibility(id);
+          updateOrder();
+        });
+      });
+
+      // extras checkboxes
+      document.querySelectorAll('[id^="extras-"] input[type=checkbox]').forEach(cb=>{
+        cb.addEventListener('change', ()=>{
+          const itemId = cb.dataset.item;
+          const extraId = cb.dataset.extra;
+          const extraPrice = Number(cb.dataset.price || 0);
+          if (cb.checked) {
+            // add if not present
+            if (!quantities[itemId].extras.find(e => e.id === extraId)) {
+              quantities[itemId].extras.push({ id: extraId, price: extraPrice });
+            }
+          } else {
+            quantities[itemId].extras = quantities[itemId].extras.filter(e => e.id !== extraId);
+          }
+          updateOrder();
+        });
+      });
+
+      // sauces & seasoning checkboxes
+      document.querySelectorAll('[id^="sauces-"] input[type=checkbox]').forEach(cb=>{
+        cb.addEventListener('change', ()=>{
+          const itemId = cb.dataset.item;
+          // gather checked values for that item
+          const checked = Array.from(document.querySelectorAll(`#sauces-${itemId} input:checked`)).map(c=>c.value);
+          quantities[itemId].sauces = checked;
+          updateOrder();
+        });
+      });
+    }
+
+    /* -------------------------
+       Toggle visibility of extras/sauces when qty > 0
+       ------------------------- */
+    function toggleOptionsVisibility(id) {
+      const item = menuItems.find(i=>i.id===id);
+      const qty = quantities[id].qty || 0;
+      const saucesEl = document.getElementById('sauces-'+id);
+      if (saucesEl) saucesEl.style.display = (qty>0 && (item.category==='kota' || item.category==='chips')) ? 'block' : 'none';
+
+      const extrasEl = document.getElementById('extras-'+id);
+      if (extrasEl) extrasEl.style.display = (qty>0 && item.category==='kota') ? 'block' : 'none';
+
+      // if qty 0, clear sauces & extras selections in state and uncheck boxes
+      if (qty === 0) {
+        if (saucesEl) { quantities[id].sauces = []; saucesEl.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false); }
+        if (extrasEl) { quantities[id].extras = []; extrasEl.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false); }
+      }
+    }
+
+    /* -------------------------
+       Calculation & order display
+       ------------------------- */
+    function formatR(n){ return CURRENCY + Number(n).toFixed(2); }
+
+    function updateOrder() {
+      const orderLines = document.getElementById('orderLines');
+      orderLines.innerHTML = '';
+      let subtotal = 0;
+
+      menuItems.forEach(item => {
+        const state = quantities[item.id];
+        if (!state) return;
+        const q = state.qty || 0;
+        if (q > 0) {
+          // base cost
+          let lineTotal = item.price * q;
+          // extras
+          if (state.extras && state.extras.length>0) {
+            state.extras.forEach(e => { lineTotal += e.price * q; });
+          }
+          // accumulate
+          subtotal += lineTotal;
+
+          // compose label
+          let label = `${item.name} x${q}`;
+          const extrasNames = (state.extras||[]).map(e => {
+            const ex = extrasList.find(x=>x.id===e.id);
+            return ex?ex.name:`${e.id}`;
+          });
+          if (extrasNames.length) label += ` (Extras: ${extrasNames.join(', ')})`;
+          if (state.sauces && state.sauces.length) label += ` [Sauces: ${state.sauces.join(', ')}]`;
+
+          // render line
+          const row = document.createElement('div');
+          row.style.display='flex'; row.style.justifyContent='space-between'; row.style.padding='6px 0';
+          row.innerHTML = `<div style="max-width:68%">${label}</div><div>${formatR(lineTotal)}</div>`;
+          orderLines.appendChild(row);
+        }
+      });
+
+      // method, discount, delivery, tip, total
+      const method = document.getElementById('method').value;
+      let deliveryFee = (method === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
+      let discount = 0;
+      if (method === 'Collection' && subtotal>0) { discount = subtotal * (COLLECTION_DISCOUNT_PERCENT/100); }
+
+      const tip = Number(document.getElementById('tip').value || 0);
+      const displaySubtotal = subtotal - discount;
+      const total = displaySubtotal + deliveryFee + tip;
+
+      // update UI
+      document.getElementById('subtotal').textContent = formatR(displaySubtotal);
+      document.getElementById('deliveryFee').textContent = formatR(deliveryFee);
+      document.getElementById('discountRow').style.display = discount>0 ? 'flex' : 'none';
+      document.getElementById('discount').textContent = '-' + formatR(discount);
+      document.getElementById('total').textContent = formatR(total);
+
+      // enable place button only when conditions met
+      const nameFilled = document.getElementById('name').value.trim().length > 0;
+      const phoneFilled = document.getElementById('phone').value.trim().length > 0;
+      const methodSelected = method !== '';
+      const addressNeeded = (method === 'Delivery');
+      const addressFilled = document.getElementById('address').value.trim().length > 0;
+      const hasItems = menuItems.some(i=> (quantities[i.id] && quantities[i.id].qty>0) );
+      document.getElementById('placeOrder').disabled = !(hasItems && nameFilled && phoneFilled && methodSelected && (!addressNeeded || addressFilled));
+    }
+
+    /* -------------------------
+       Build & open WhatsApp order
+       ------------------------- */
+    function placeOrder() {
+      const name = document.getElementById('name').value.trim();
+      const phone = document.getElementById('phone').value.trim();
+      const address = document.getElementById('address').value.trim();
+      const method = document.getElementById('method').value;
+      const tip = Number(document.getElementById('tip').value || 0);
+
+      // gather lines and compute totals (repeat to capture final values)
+      let messageLines = [];
+      messageLines.push(`Order — Two Tone Café`);
+      messageLines.push(`Name: ${name}`);
+      messageLines.push(`Phone: ${phone}`);
+      messageLines.push(`Method: ${method}`);
+      if (method === 'Delivery') messageLines.push(`Address: ${address}`);
+      messageLines.push('');
+      messageLines.push('Items:');
+
+      let subtotal = 0;
+      menuItems.forEach(item=>{
+        const state = quantities[item.id];
+        if (!state) return;
+        const q = state.qty || 0;
+        if (q>0) {
+          let lineTotal = item.price * q;
+          let extrasText = '';
+          if (state.extras && state.extras.length) {
+            const names = state.extras.map(e=> {
+              const ex = extrasList.find(x=>x.id===e.id);
+              return ex?ex.name:e.id;
+            });
+            extrasText = ` (Extras: ${names.join(', ')})`;
+            state.extras.forEach(e=> lineTotal += e.price * q);
+          }
+          if (state.sauces && state.sauces.length) {
+            extrasText += `${extrasText? ' ':''}[Sauces: ${state.sauces.join(', ')}]`;
+          }
+          subtotal += lineTotal;
+          messageLines.push(`- ${q} x ${item.name}${extrasText} => ${CURRENCY}${lineTotal.toFixed(2)}`);
+        }
+      });
+
+      // delivery/discount/tip/total
+      let deliveryFee = (method === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
+      let discount = (method === 'Collection' && subtotal>0) ? (subtotal * (COLLECTION_DISCOUNT_PERCENT/100)) : 0;
+      const displaySubtotal = subtotal - discount;
+      const total = displaySubtotal + deliveryFee + tip;
+
+      messageLines.push('');
+      messageLines.push(`Subtotal: ${CURRENCY}${displaySubtotal.toFixed(2)}`);
+      if (discount>0) messageLines.push(`Collection discount: -${CURRENCY}${discount.toFixed(2)}`);
+      if (deliveryFee>0) messageLines.push(`Delivery fee: ${CURRENCY}${deliveryFee.toFixed(2)}`);
+      if (tip>0) messageLines.push(`Tip: ${CURRENCY}${Number(tip).toFixed(2)}`);
+      messageLines.push(`TOTAL: ${CURRENCY}${total.toFixed(2)}`);
+      messageLines.push('');
+      messageLines.push('--- Please confirm payment & estimated time. Thank you!');
+
+      const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(messageLines.join('\n'))}`;
+      window.open(url, '_blank');
+    }
+
+    /* -------------------------
+       Clear cart / reset UI
+       ------------------------- */
+    function clearCart() {
+      menuItems.forEach(item=>{
+        if (quantities[item.id]) {
+          quantities[item.id].qty = 0;
+          quantities[item.id].extras = [];
+          quantities[item.id].sauces = [];
+        }
+        const qEl = document.getElementById('qty_'+item.id);
+        if (qEl) qEl.value = 0;
+        const extrasEl = document.getElementById('extras-'+item.id);
+        if (extrasEl) { extrasEl.style.display='none'; extrasEl.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.checked=false); }
+        const saucesEl = document.getElementById('sauces-'+item.id);
+        if (saucesEl) { saucesEl.style.display='none'; saucesEl.querySelectorAll('input[type=checkbox]').forEach(cb=>cb.checked=false); }
+      });
+
+      document.getElementById('tip').value = 0;
+      document.getElementById('name').value = '';
+      document.getElementById('phone').value = '';
+      document.getElementById('method').value = '';
+      document.getElementById('address').value = '';
+      updateOrder();
+    }
+
+    /* -------------------------
+       Helpers: attach form listeners so UI updates live
+       ------------------------- */
+    function attachFormListeners(){
+      ['tip','name','phone','method','address'].forEach(id=>{
+        const el = document.getElementById(id);
+        if (el){
+          el.addEventListener('input', updateOrder);
+          el.addEventListener('change', updateOrder);
+        }
+      });
+      document.getElementById('placeOrder').addEventListener('click', placeOrder);
+      document.getElementById('clearCart').addEventListener('click', clearCart);
+    }
+
+    /* -------------------------
+       Init
+       ------------------------- */
+    renderCategoryGrids();
+    attachFormListeners();
+    updateOrder();
+
+  </script>
+</body>
+</html>
