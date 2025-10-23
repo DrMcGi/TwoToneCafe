@@ -23,18 +23,16 @@
       --lux-shadow:0 12px 30px rgba(0,0,0,0.12);
       --lux-ease:cubic-bezier(0.22,1,0.36,1);
       --lux-blur:18px;
-      --pill-bg:#fff9ea;
-      --pill-text:#6a4b1f;
     }
     *{box-sizing:border-box}
     html,body{height:100%}
     body{
       margin:0;background:var(--bg);color:var(--text);
       font-family:'Inter',sans-serif;line-height:1.6;font-size:1rem;overflow-x:hidden;
-      padding-top:178px; /* space for fixed header (title + tabs + badge) */
+      padding-top:180px; /* space for fixed header (title + tabs + badge) */
     }
 
-    /* Fixed floating header with cart badge + tabs */
+    /* Header */
     header{
       position:fixed;top:0;left:0;right:0;z-index:600;
       background:var(--lux-glass);backdrop-filter:blur(var(--lux-blur));
@@ -73,7 +71,7 @@
     }
     nav.quick-links a:hover{transform:translateY(-2px)}
 
-    /* Hero — luxe, fully visible, not cut by header, controls visible */
+    /* Hero video */
     .hero{
       position:relative;overflow:hidden;max-width:1100px;margin:12px auto 0;border-radius:24px;
       padding-top:4px;
@@ -96,6 +94,8 @@
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
     }
     .hero-text p{margin:0;color:#f0f0f0}
+
+    /* Video controls */
     .mute-btn,.audio-toggle{
       position:absolute;top:16px;background:var(--lux-grad);
       border:none;color:#fff;padding:12px;border-radius:50%;cursor:pointer;
@@ -118,7 +118,7 @@
       -webkit-background-clip:text;-webkit-text-fill-color:transparent;
     }
 
-    /* Luxe menu grid + flying image animation */
+    /* Menu grid */
     .menu-grid{display:grid;grid-template-columns:repeat(2,minmax(260px,1fr));gap:18px}
     @media(max-width:620px){.menu-grid{grid-template-columns:1fr}}
     @keyframes fadeIn{to{opacity:1;transform:translateY(0)}}
@@ -186,12 +186,6 @@
       content:"✔";position:absolute;top:-2px;left:2px;font-size:14px;color:#fff;
     }
 
-    /* Sauces vs seasoning chips */
-    .pill-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
-    .pill{padding:6px 10px;border-radius:999px;border:1px solid #f0e2c4;background:var(--pill-bg);color:var(--pill-text);font-weight:700;font-size:0.84rem;box-shadow:0 2px 8px rgba(0,0,0,0.06)}
-    .pill.sauce{background:#fff2f0;color:#7a2e21;border-color:#ffd7cf}
-    .pill.seasoning{background:#f4fff2;color:#2b6b2e;border-color:#d7f5cf}
-
     /* Add to cart button */
     .lux-add-btn{
       width:100%;padding:12px;border-radius:999px;border:none;cursor:pointer;
@@ -200,7 +194,7 @@
     }
     .lux-add-btn:hover{ transform:translateY(-2px) }
 
-    /* Sidebar summary — Luxe panel */
+    /* Sidebar summary */
     .sidebar{position:sticky;top:16px;margin-top:12px}
     .summary{
       background:
@@ -222,7 +216,7 @@
       box-shadow:0 2px 8px rgba(0,0,0,0.06);
     }
 
-    /* Luxe cart lines */
+    /* Cart lines */
     .cart-line{
       display:flex;justify-content:space-between;align-items:flex-start;gap:10px;padding:10px;border-radius:14px;margin:8px 0;
       background:#ffffff;border:1px solid #f1f1f1;box-shadow:0 2px 10px rgba(0,0,0,0.06);
@@ -233,29 +227,40 @@
     .btn-ghost{background:#fff;color:var(--brand-deep);border:2px solid var(--brand-deep);border-radius:999px;padding:6px 10px;font-weight:800;cursor:pointer}
     .btn-danger{background:#fff;color:#a83232;border:2px solid #a83232;border-radius:999px;padding:6px 10px;font-weight:800;cursor:pointer}
 
-    /* Summary actions inline */
+    /* Actions */
     .actions{display:flex;gap:10px;margin-top:12px}
     .actions button{flex:1}
 
-    /* Footer hover reveal */
+    /* Luxurious radio cards */
+    .method-cards{display:flex;gap:16px;margin:10px 0;flex-wrap:wrap}
+    .method-card{flex:1;cursor:pointer;border-radius:16px;overflow:hidden;transition:transform .25s var(--lux-ease), box-shadow .25s var(--lux-ease)}
+    .method-card input{display:none}
+    .method-card .card-body{border:2px solid var(--lux-gold);border-radius:16px;padding:14px;background:#fff;text-align:center;box-shadow:0 4px 12px rgba(0,0,0,0.08)}
+    .method-card .title{font-family:Montserrat,sans-serif;font-weight:800;font-size:1.05rem;margin-bottom:4px}
+    .method-card .desc{font-size:0.9rem;color:var(--muted)}
+    .method-card:hover .card-body{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,0.15)}
+    .method-card input:checked + .card-body{background:var(--lux-grad);color:#fff;border-color:transparent;box-shadow:0 8px 24px rgba(0,0,0,0.25)}
+    .method-card input:checked + .card-body .desc{color:#fdfdfd}
+
+    /* Footer */
     footer{
-      padding:18px 16px;text-align:center;color:var(--muted);font-size:0.9rem;margin-top:24px;border-top:1px solid #eee;position:relative;
+      padding:18px 16px;text-align:center;color:#777;font-size:0.9rem;margin-top:24px;border-top:1px solid #eee;position:relative;
     }
     footer .hover-info{opacity:0;transition:opacity .3s ease;color:var(--brand);font-weight:600}
     footer:hover .hover-info{opacity:1}
 
-    /* Floating checkout button (bottom-right) */
+    /* Floating checkout */
     .floating-checkout{
       position:fixed;bottom:20px;right:20px;z-index:300;
       background:var(--lux-grad);color:#fff;font-weight:800;border:none;
-      border-radius:999px;padding:14px 22px;box-shadow:0 6px 20px rgba(0,0,0,0.25);
+      border-radius:999px;padding:12px 18px;box-shadow:0 6px 20px rgba(0,0,0,0.25);
       cursor:pointer;transition:transform .25s var(--lux-ease), box-shadow .25s var(--lux-ease);
       display:none;
     }
     .floating-checkout.show{display:inline-flex;align-items:center;gap:10px}
     .floating-checkout:hover{transform:translateY(-2px);box-shadow:0 10px 28px rgba(0,0,0,0.35)}
 
-    /* Modal preview (hidden by default) */
+    /* Modal */
     .modal{position:fixed;inset:0;background:rgba(0,0,0,0.6);display:none;align-items:center;justify-content:center;z-index:400}
     .modal.show{display:flex}
     .modal-content{
@@ -288,9 +293,7 @@
         <p class="tag">Fresh kotas, crispy chips & essentials — delivery 🚴 or collection 🍽️</p>
       </div>
       <div class="header-actions">
-        <div class="cart-badge" id="headerCartBadge">
-          🛒 Cart <span class="count" id="headerCartCount">0</span>
-        </div>
+        <div class="cart-badge" id="headerCartBadge">🛒 Cart <span class="count" id="headerCartCount">0</span></div>
       </div>
       <nav class="quick-links" id="scrollTabs">
         <a href="#kotas" data-target="kotas">Kotas</a>
@@ -303,8 +306,8 @@
   <!-- Hero video -->
   <section class="hero" aria-label="Two Tone Café promo">
     <video class="promo-video" id="promoVideo" src="videos/promo.mp4" autoplay muted loop playsinline></video>
-    <button class="mute-btn" id="muteToggle" aria-label="Toggle sound">🔇</button>
     <button class="audio-toggle" id="audioToggle" aria-label="Toggle ambient audio">🎵</button>
+    <button class="mute-btn" id="muteToggle" aria-label="Toggle sound">🔇</button>
     <div class="hero-text">
       <h2>Two Tone Café</h2>
       <p>Neighborhood flavor. Fast delivery. Always fresh.</p>
@@ -337,7 +340,7 @@
       </div>
 
       <div class="delivery-note" style="background:#ffefc1;padding:12px;border-radius:12px;margin:12px 0;text-align:center;color:#8a4b08;font-weight:700">
-        🔥 Order now — delivery in your area. Collection gets a 5% discount.
+        🔥 Order now — delivery in your area. Collection gets a future discount.
       </div>
       <small class="muted">Images: placeholders — replace <code>img</code> paths with real pictures.</small>
     </section>
@@ -348,7 +351,7 @@
         <div id="orderLines" style="max-height:260px;overflow:auto"></div>
 
         <div class="row"><div>Subtotal</div><div id="subtotal">R0.00</div></div>
-        <div class="row" id="discountRow" style="display:none;color:green"><div>Collection discount</div><div id="discount">-R0.00</div></div>
+        <div class="row" id="discountRow" style="display:none;color:green"><div>Discount</div><div id="discount">-R0.00</div></div>
         <div class="row"><div>Delivery fee</div><div id="deliveryFee">R0.00</div></div>
         <div class="row"><div>Tip (optional)</div><div><input id="tip" class="input" type="number" min="0" step="1" value="0"></div></div>
         <div class="row" style="font-weight:800;font-size:1.05rem"><div>Total</div><div id="total">R0.00</div></div>
@@ -358,11 +361,23 @@
         <label><strong>Your name</strong><input id="name" class="input" placeholder="John Doe"></label>
         <label style="margin-top:8px"><strong>Phone number</strong><input id="phone" class="input" placeholder="0811234567"></label>
 
-        <!-- Method selection: explicit, reliable, shows/hides address -->
-        <label style="margin-top:8px"><strong>Order method</strong></label>
-        <div class="method-toggle" id="methodToggle">
-          <button type="button" data-method="Collection" id="btnCollection" aria-pressed="false">Collection</button>
-          <button type="button" data-method="Delivery" id="btnDelivery" aria-pressed="false">Delivery</button>
+        <!-- Luxurious radio cards for method selection -->
+        <label style="margin-top:12px;display:block;font-weight:700">Order method</label>
+        <div class="method-cards" id="methodToggle">
+          <label class="method-card">
+            <input type="radio" name="orderMethod" value="Collection" id="radioCollection">
+            <div class="card-body">
+              <div class="title">🍽️ Collection</div>
+              <div class="desc">Pick up in-store</div>
+            </div>
+          </label>
+          <label class="method-card">
+            <input type="radio" name="orderMethod" value="Delivery" id="radioDelivery">
+            <div class="card-body">
+              <div class="title">🚴 Delivery</div>
+              <div class="desc">Fast delivery to your door</div>
+            </div>
+          </label>
         </div>
         <input type="hidden" id="method" value="">
 
@@ -396,7 +411,7 @@
     </div>
   </div>
 
-  <!-- Floating checkout button (bottom-right, auto visibility) -->
+  <!-- Floating checkout button -->
   <button class="floating-checkout" id="fcCheckout">
     🛒 Checkout (<span id="fc-count">0</span>) · <span id="fc-total">R0.00</span>
   </button>
@@ -408,7 +423,6 @@
     const CURRENCY = 'R';
     const WHATSAPP_NUMBER = '27767475399'; // Intl format without +
     const DELIVERY_FEE_BASE = 8;
-    const COLLECTION_DISCOUNT_PERCENT = 5;
 
     const extrasList = [
       { id: 'extra-cheese',  name: 'Extra Cheese',       price: 5 },
@@ -417,9 +431,7 @@
       { id: 'extra-patty',   name: 'Extra Beef Patty',   price: 15 },
       { id: 'extra-polony',  name: 'Extra Polony',       price: 5 }
     ];
-    const saucesAndSeasoning = [
-      "Tomato Sauce","BBQ Sauce","Hot Sauce","Salt","Spice","Vinegar","Green Chillies with Secret Sauce"
-    ];
+
     const menuItems = [
       { id:'galxboy',        name:'GalXBoy',                 price:25,  desc:'Polony, Chakalaka, Chips, Viana', category:'kota',  img:'images/GalXBoy.jpg' },
       { id:'true-relegion',  name:'True Relegion',           price:30,  desc:'Russian, Cheese, Polony, Chakalaka, Lettuce', category:'kota', img:'' },
@@ -479,10 +491,6 @@
         const saucesMarkup = `
           <div class="options" id="sauces-${item.id}">
             <b>Sauces & seasoning (select):</b>
-            <div class="pill-group">
-              <span class="pill sauce">Sauces</span>
-              <span class="pill seasoning">Seasoning</span>
-            </div>
             <label><input type="checkbox" data-item="${item.id}" value="Tomato Sauce"> Tomato Sauce</label>
             <label><input type="checkbox" data-item="${item.id}" value="BBQ Sauce"> BBQ Sauce</label>
             <label><input type="checkbox" data-item="${item.id}" value="Hot Sauce"> Hot Sauce</label>
@@ -588,7 +596,7 @@
     }
 
     /* -------------------------
-       Toggle options visibility (animated)
+       Toggle options visibility
        ------------------------- */
     function toggleOptionsVisibility(id) {
       const item = menuItems.find(i=>i.id===id);
@@ -616,7 +624,7 @@
     }
 
     /* -------------------------
-       Cart operations (line-item model)
+       Cart operations
        ------------------------- */
     function addToCart(itemId){
       const item = menuItems.find(i=>i.id===itemId);
@@ -726,7 +734,9 @@
       const method = document.getElementById('method').value;
       const subtotal = computeSubtotalFromCart();
       let deliveryFee = (method === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
-      let discount = (method === 'Collection' && subtotal>0) ? (subtotal * (COLLECTION_DISCOUNT_PERCENT/100)) : 0;
+
+      // Discount disabled for now (always 0). Future: set to non-zero and row will appear.
+      let discount = 0;
 
       const tip = Number(document.getElementById('tip').value || 0);
       const displaySubtotal = subtotal - discount;
@@ -769,7 +779,7 @@
       const summary = document.querySelector('.summary');
       const rect = summary.getBoundingClientRect();
       const viewportH = window.innerHeight || document.documentElement.clientHeight;
-      const inView = rect.top < viewportH && rect.bottom > 0; // any visible portion
+      const inView = rect.top < viewportH && rect.bottom > 0;
 
       if (count > 0 && !inView) fcBtn.classList.add('show');
       else fcBtn.classList.remove('show');
@@ -778,7 +788,7 @@
     window.addEventListener('resize', updateFloatingCheckout);
 
     /* -------------------------
-       WhatsApp message + modal
+       WhatsApp preview & send
        ------------------------- */
     function buildWhatsAppMessage() {
       const name = document.getElementById('name').value.trim();
@@ -815,14 +825,16 @@
         messageLines.push(`- ${line.qty} x ${line.name}${extrasText} => ${CURRENCY}${lineTotal.toFixed(2)}`);
       });
 
-      let deliveryFee = (method === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
-      let discount = (method === 'Collection' && subtotal>0) ? (subtotal * (COLLECTION_DISCOUNT_PERCENT/100)) : 0;
+      const methodNow = document.getElementById('method').value;
+      let deliveryFee = (methodNow === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
+      let discount = 0; // disabled for now
+
       const displaySubtotal = subtotal - discount;
       const total = displaySubtotal + deliveryFee + tip;
 
       messageLines.push('');
       messageLines.push(`Subtotal: ${CURRENCY}${displaySubtotal.toFixed(2)}`);
-      if (discount>0) messageLines.push(`Collection discount: -${CURRENCY}${discount.toFixed(2)}`);
+      if (discount>0) messageLines.push(`Discount: -${CURRENCY}${discount.toFixed(2)}`);
       if (deliveryFee>0) messageLines.push(`Delivery fee: ${CURRENCY}${deliveryFee.toFixed(2)}`);
       if (tip>0) messageLines.push(`Tip: ${CURRENCY}${Number(tip).toFixed(2)}`);
       messageLines.push(`TOTAL: ${CURRENCY}${total.toFixed(2)}`);
@@ -877,7 +889,7 @@
     }
 
     /* -------------------------
-       Scrollspy for category tabs
+       Scrollspy for tabs
        ------------------------- */
     function attachScrollSpy(){
       const tabs = document.querySelectorAll('#scrollTabs a');
@@ -897,7 +909,7 @@
     }
 
     /* -------------------------
-       Video/audio controls — ensure sound works
+       Video/audio controls
        ------------------------- */
     function attachVideoControls(){
       const video = document.getElementById('promoVideo');
@@ -908,13 +920,13 @@
         if (!video.muted) toggle.classList.add('active'); else toggle.classList.remove('active');
       }
 
-      // Prime playback on first user gesture to satisfy autoplay policies
+      // Prime playback on first user gesture
       function primePlayback(){ video.play().catch(()=>{}); }
       document.addEventListener('click', primePlayback, { once:true });
 
       const toggleMute = ()=>{
         video.muted = !video.muted;
-        if (!video.muted) { video.play().catch(()=>{}); } // ensure audio starts after unmute
+        if (!video.muted) { video.play().catch(()=>{}); }
         setIcon();
       };
 
@@ -966,36 +978,28 @@
     }
 
     /* -------------------------
-       Method selection — reconfigured & reliable
+       Method selection (radio cards)
        ------------------------- */
     function setMethod(methodValue){
       const methodInput = document.getElementById('method');
-      const btnCollection = document.getElementById('btnCollection');
-      const btnDelivery = document.getElementById('btnDelivery');
       const addressBlock = document.getElementById('addressBlock');
-
-      methodInput.value = methodValue;
-
-      // Update UI states
-      btnCollection.classList.toggle('active', methodValue === 'Collection');
-      btnDelivery.classList.toggle('active', methodValue === 'Delivery');
-      btnCollection.setAttribute('aria-pressed', methodValue === 'Collection' ? 'true' : 'false');
-      btnDelivery.setAttribute('aria-pressed', methodValue === 'Delivery' ? 'true' : 'false');
-
-      // Show/hide address
+      methodInput.value = methodValue || '';
       addressBlock.style.display = methodValue === 'Delivery' ? 'block' : 'none';
-
       updateOrder();
       updateFloatingCheckout();
     }
 
     function attachMethodListeners(){
-      document.getElementById('btnCollection').addEventListener('click', ()=> setMethod('Collection'));
-      document.getElementById('btnDelivery').addEventListener('click', ()=> setMethod('Delivery'));
+      const radios = document.querySelectorAll('.method-card input[name="orderMethod"]');
+      radios.forEach(r=>{
+        r.addEventListener('change', ()=>{
+          if (r.checked) setMethod(r.value);
+        });
+      });
     }
 
     /* -------------------------
-       Form + floating checkout listeners
+       Form & modal listeners
        ------------------------- */
     function attachFormListeners(){
       ['tip','name','phone','address'].forEach(id=>{
@@ -1028,7 +1032,7 @@
       attachVideoControls();
       attachAmbientAudio();
       attachScrollSpy();
-      setMethod(''); // no default selected until user chooses
+      setMethod(''); // wait for user selection
       updateOrder();
       updateFloatingCheckout();
     }
