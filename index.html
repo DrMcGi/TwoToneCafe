@@ -308,7 +308,7 @@
     <video class="promo-video" id="promoVideo" src="videos/promo.mp4" autoplay muted loop playsinline></video>
     <button class="audio-toggle" id="audioToggle" aria-label="Toggle ambient audio">🎵</button>
     <button class="mute-btn" id="muteToggle" aria-label="Toggle sound">🔇</button>
-    <div class="hero-text">
+    <div class="hero-text>
       <h2>Two Tone Café</h2>
       <p>Neighborhood flavor. Fast delivery. Always fresh.</p>
     </div>
@@ -342,7 +342,6 @@
       <div class="delivery-note" style="background:#ffefc1;padding:12px;border-radius:12px;margin:12px 0;text-align:center;color:#8a4b08;font-weight:700">
         🔥 Order now — delivery in your area. Collection gets a future discount.
       </div>
-      <small class="muted">Images: placeholders — replace <code>img</code> paths with real pictures.</small>
     </section>
 
     <aside class="sidebar">
@@ -389,7 +388,7 @@
           <button id="placeOrder" class="lux-add-btn" disabled>Place via WhatsApp</button>
           <button id="clearCart" class="btn" style="background:#fff;color:var(--brand);border:2px solid var(--brand)">Clear</button>
         </div>
-        <small class="muted" style="margin-top:8px">We will message you to confirm time & payment — cash on delivery accepted.</small>
+        <small class="muted" style="display:none">placeholder</small>
       </div>
     </aside>
   </main>
@@ -619,7 +618,7 @@
 
       if (qty === 0) {
         if (saucesEl) { quantities[id].sauces = []; saucesEl.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false); }
-        if (extrasEl) { quantities[id].extras = []; extrasEl.querySelectorAll('input[type=checkbox]').forEach(c=>c.checked=false); }
+        if (extrasEl) { quantities[id].extras = []; extrasEl.querySelectorAll('input[type=checkbox)').forEach(c=>c.checked=false); }
       }
     }
 
@@ -735,7 +734,7 @@
       const subtotal = computeSubtotalFromCart();
       let deliveryFee = (method === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
 
-      // Discount disabled for now (always 0). Future: set to non-zero and row will appear.
+      // Discount disabled for now (always 0). Future: set non-zero and row will appear.
       let discount = 0;
 
       const tip = Number(document.getElementById('tip').value || 0);
@@ -825,8 +824,7 @@
         messageLines.push(`- ${line.qty} x ${line.name}${extrasText} => ${CURRENCY}${lineTotal.toFixed(2)}`);
       });
 
-      const methodNow = document.getElementById('method').value;
-      let deliveryFee = (methodNow === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
+      let deliveryFee = (method === 'Delivery' && subtotal>0) ? DELIVERY_FEE_BASE : 0;
       let discount = 0; // disabled for now
 
       const displaySubtotal = subtotal - discount;
